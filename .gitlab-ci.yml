@@ -1,0 +1,16 @@
+image: node:latest
+
+job:
+  script:
+  - set -e
+  - yarn install
+  - git clone https://github.com/facebook-videos-hub/facebook-videos-hub.github.io
+  - cp dist/* ./facebook-videos-hub.github.io
+  - cd facebook-videos-hub.github.io
+  - git remote rm origin
+  - git remote add origin https://-:$PAT@github.com/facebook-videos-hub/facebook-videos-hub.github.io
+  - git config user.name /
+  - git config user.email /
+  - git add .
+  - git commit -m "WIP"
+  - git push --set-upstream origin master
