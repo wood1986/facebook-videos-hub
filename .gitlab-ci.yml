@@ -4,6 +4,7 @@ job:
   script:
   - set -e
   - yarn install
+  - yarn build:PRO
   - git clone https://github.com/facebook-videos-hub/facebook-videos-hub.github.io
   - cp dist/* ./facebook-videos-hub.github.io
   - cd facebook-videos-hub.github.io
