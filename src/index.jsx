@@ -94,7 +94,6 @@ const GlobalStyle = createGlobalStyle`
       Hub = (props) => {
         const [videos, setVideos] = useState(props.videos), // eslint-disable-line react/prop-types, no-shadow
               lastUpdatedAt = useRef(0),
-              [enableLiveJson, setEnableLiveJson] = useState(true),
               inputEl = useRef(null),
               onDeleteClick = useCallback((video) => () => {
                 const nextVideos = new Set(videos);
@@ -119,9 +118,6 @@ const GlobalStyle = createGlobalStyle`
                   </ControlFlexBox>
                 </VideoWrapper>;
               }),
-              onLiveJsonChange = useCallback(() => {
-                setEnableLiveJson(!enableLiveJson);
-              }),
               addVideos = useCallback((array) => {
                 const nextVideos = array.map((video) => new URL(video.replace(/\/+$/u, ""), "https://www.facebook.com")).
                   filter((video) => video.pathname !== "/" && !videos.has(video.pathname)).
@@ -145,16 +141,16 @@ const GlobalStyle = createGlobalStyle`
               });
 
         useEffect(() => {
-          const intervalId = -1;
-          if (enableLiveJson) {
-            fetchLiveJson();
-            setInterval(fetchLiveJson, 15000);
-          }
+          fetchLiveJson();
+        }, []);
+
+        useEffect(() => {
+          const intervalId = setInterval(fetchLiveJson, 15000);
 
           return () => {
             clearInterval(intervalId);
           };
-        }, [enableLiveJson]);
+        });
 
         useEffect(() => {
           window.FB.XFBML.parse();
@@ -181,7 +177,6 @@ const GlobalStyle = createGlobalStyle`
               }, 100);
             }} />
             { videos.size > 0 ? <EmptyButton onClick={onEmptyClick}>🈳</EmptyButton> : null }
-            <EmptyButton onClick={onLiveJsonChange}>{ enableLiveJson ? "⏹" : "🔄"}</EmptyButton>
           </FixedDiv>
         </>;
       };
